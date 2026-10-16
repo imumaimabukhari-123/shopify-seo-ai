@@ -1,0 +1,447 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Review Dashboard</title>
+<link rel="stylesheet" href="/static/style.css?v=3">
+<style>
+  body { font-size: 14px; line-height: 1.45; }
+  header { background: var(--card); border-bottom: 1px solid var(--line); position: sticky; top: 60px; z-index: 2; }
+  .head-inner { max-width: 1200px; margin: 0 auto; padding: 14px 24px; }
+  @media (max-width: 600px) { .head-inner { padding: 12px 16px; } }
+
+  .tabs { display: flex; gap: 4px; margin-bottom: 12px; flex-wrap: wrap; }
+  .tabs a { text-decoration: none; color: var(--muted); padding: 8px 14px; border-radius: 8px; font-weight: 600; border: 1px solid transparent; }
+  .tabs a.active { color: var(--green-dark); background: var(--green-soft); }
+  .tabs a .v2 { font-size: 10px; background: #fff5d6; color: var(--amber); padding: 1px 6px; border-radius: 8px; margin-left: 4px; vertical-align: 2px; }
+
+  .bar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+  button { border: 1px solid var(--line); background: #fff; padding: 7px 14px; border-radius: 6px; cursor: pointer; font: inherit; }
+  button.primary { background: var(--green); border-color: var(--green); color: #fff; }
+  button.warn { background: #fff5d6; border-color: #f1d98a; color: #6b5000; }
+  button:disabled { opacity: .5; cursor: not-allowed; }
+  input[type=number] { width: 70px; padding: 6px; border: 1px solid var(--line); border-radius: 6px; }
+  .sep { width: 1px; height: 24px; background: var(--line); }
+
+  main { max-width: 1200px; margin: 0 auto; padding: 20px 24px 60px; }
+  @media (max-width: 600px) { main { padding: 16px 16px 40px; } }
+  #log { background: #1e1e1e; color: #d4d4d4; font: 12px/1.5 Consolas, monospace; padding: 10px 14px; border-radius: 8px;
+         max-height: 180px; overflow: auto; white-space: pre-wrap; margin-bottom: 16px; display: none; }
+  .filters { display: flex; gap: 6px; margin-bottom: 14px; flex-wrap: wrap; }
+  .filters button.active { background: var(--text); color: #fff; border-color: var(--text); }
+
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px; margin-bottom: 14px; }
+  .card-head { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; margin-bottom: 12px; }
+  .card-head h2 { font-size: 15px; margin: 0; }
+  .handle { color: var(--muted); font-size: 12px; }
+  .badge { font-size: 12px; padding: 2px 8px; border-radius: 10px; background: #e4e5e7; white-space: nowrap; }
+  .badge.generated, .badge.edited { background: #fff5d6; color: var(--amber); }
+  .badge.published { background: #d7f5e9; color: var(--green); }
+  .badge.error { background: #fde4df; color: var(--red); }
+  .badge.restored { background: #e8eefc; color: #2c5cc5; }
+  .backup-note { color: var(--muted); font-size: 12px; margin-left: auto; }
+  button.undo { margin-left: 0; }
+  .cols { display: grid; grid-template-columns: 1fr 1.4fr; gap: 20px; }
+  @media (max-width: 800px) { .cols { grid-template-columns: 1fr; } }
+  .label { font-size: 12px; font-weight: 600; color: var(--muted); margin: 8px 0 3px; display: flex; justify-content: space-between; gap: 8px; }
+  .current { color: var(--muted); background: #fafafa; padding: 6px 8px; border-radius: 6px; min-height: 28px; }
+  .current.desc { max-height: 150px; overflow: auto; }
+  input[type=text], textarea { width: 100%; padding: 7px 8px; border: 1px solid var(--line); border-radius: 6px; font: inherit; }
+  textarea { min-height: 150px; font: 12px/1.45 Consolas, monospace; }
+  .over { color: var(--red); }
+  .card-foot { display: flex; gap: 14px; align-items: center; margin-top: 12px; }
+  .saved { color: var(--green); font-size: 12px; }
+  iframe { width: 100%; height: 220px; border: 1px solid var(--line); border-radius: 6px; background: #fff; margin-top: 6px; }
+  .thumb { width: 100%; max-width: 260px; aspect-ratio: 1; object-fit: contain; background: #fafafa; border: 1px solid var(--line); border-radius: 8px; }
+  .demo-banner { display: none; background: var(--green-soft); color: var(--green-dark); border-radius: 10px; padding: 12px 16px; margin-bottom: 16px; }
+  body.is-visitor .demo-banner { display: block; }
+  body.is-visitor header .bar { display: none; }
+  .empty { text-align: center; color: var(--muted); padding: 60px 0; }
+
+  /* Version 2: guess checker box */
+  .guesses { margin-top: 12px; border-radius: 8px; padding: 10px 12px; font-size: 13px; }
+  .guesses.has { background: #fff8e6; border: 1px solid #f1d98a; }
+  .guesses.clean { background: #eef8f3; color: var(--green-dark); }
+  .guesses.unchecked { background: #f4f4f5; color: var(--muted); }
+  .guesses ul { margin: 6px 0 8px; padding-left: 18px; }
+  .guesses li { margin: 3px 0; }
+  .guesses q { font-weight: 600; }
+  .guesses .why { color: var(--muted); }
+</style>
+</head>
+<body>
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="/"><span class="brand-mark">S</span><span class="brand-text">SEO Generator</span></a>
+    <div class="nav-links">
+      <a href="/">Home</a>
+      <a href="/guide">Guide</a>
+      <a href="/audit">Audit</a>
+      <a href="/chat">Chat</a>
+      <a href="/review" class="active">Review</a>
+    </div>
+  </div>
+</nav>
+<script src="/static/nav.js?v=4"></script>
+
+<header>
+  <div class="head-inner">
+    <div class="tabs" id="tabs">
+      <a href="#products" data-table="products">Products</a>
+      <a href="#collections" data-table="collections">Collections<span class="v2">V2</span></a>
+      <a href="#images" data-table="images">Image alt text<span class="v2">V2</span></a>
+    </div>
+    <div class="bar">
+      <label>Limit <input type="number" id="limit" min="1" placeholder="all"></label>
+      <label><input type="checkbox" id="regenerate"> Regenerate existing</label>
+      <button class="primary" id="btn-generate">1. Generate</button>
+      <button class="warn" id="btn-check" title="Ask the AI to flag anything it guessed">Check for guesses</button>
+      <span class="sep"></span>
+      <label><input type="checkbox" id="dryrun"> Dry run</label>
+      <button class="primary" id="btn-push">2. Push approved to Shopify</button>
+      <span class="sep"></span>
+      <a id="download" href="/download/products"><button>Download CSV</button></a>
+      <button id="btn-reload">Reload</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="demo-banner" id="demo-banner">👀 <b>Read-only demo.</b> These are real AI results from a free Shopify test store with sample snowboards. Browse the tabs to compare the original text (left) with the AI's version (right). <a href="/guide">How it works →</a></div>
+  <div id="log"></div>
+  <div class="filters" id="filters"></div>
+  <div id="list"></div>
+</main>
+
+<!-- Card for products and collections -->
+<template id="seo-tpl">
+  <div class="card">
+    <div class="card-head">
+      <div><h2 data-f="title"></h2><span class="handle" data-f="handle"></span></div>
+      <span class="badge"></span>
+    </div>
+    <div class="cols">
+      <div>
+        <div class="label">Current meta title</div><div class="current" data-f="current_meta_title"></div>
+        <div class="label">Current meta description</div><div class="current" data-f="current_meta_description"></div>
+        <div class="label">Current description</div><div class="current desc" data-f="current_description"></div>
+      </div>
+      <div>
+        <div class="label">New meta title <span data-count="new_meta_title" data-max="60"></span></div>
+        <input type="text" data-edit="new_meta_title">
+        <div class="label">New meta description <span data-count="new_meta_description" data-max="160"></span></div>
+        <input type="text" data-edit="new_meta_description">
+        <div class="label">New description (HTML) <a href="#" data-preview>Show preview</a></div>
+        <textarea data-edit="new_description_html"></textarea>
+        <div class="guesses"></div>
+      </div>
+    </div>
+    <div class="card-foot">
+      <label><input type="checkbox" data-approve> <strong>Approve</strong></label>
+      <button class="undo" data-undo hidden title="Put back what was on Shopify before this was published">↶ Undo</button>
+      <span class="saved"></span>
+      <span class="backup-note"></span>
+    </div>
+  </div>
+</template>
+
+<!-- Card for images -->
+<template id="img-tpl">
+  <div class="card">
+    <div class="card-head">
+      <div><h2 data-f="product_title"></h2></div>
+      <span class="badge"></span>
+    </div>
+    <div class="cols">
+      <div><img class="thumb" alt="" loading="lazy"></div>
+      <div>
+        <div class="label">Current alt text</div><div class="current" data-f="current_alt"></div>
+        <div class="label">New alt text <span data-count="new_alt" data-max="125"></span></div>
+        <input type="text" data-edit="new_alt">
+      </div>
+    </div>
+    <div class="card-foot">
+      <label><input type="checkbox" data-approve> <strong>Approve</strong></label>
+      <button class="undo" data-undo hidden title="Put back what was on Shopify before this was published">↶ Undo</button>
+      <span class="saved"></span>
+      <span class="backup-note"></span>
+    </div>
+  </div>
+</template>
+
+<script>
+const $ = (sel, root = document) => root.querySelector(sel);
+const KEYS = { products: "product_id", collections: "collection_id", images: "media_id" };
+const NAMES = { products: "product", collections: "collection", images: "image" };
+let table = "products";
+let rows = [];
+let filter = "all";
+let OWNER = false;   // set from /api/me: visitors get a read-only view
+let backupInfo = {}; // Version 3: {key: {count, last}} from /api/{table}/backups
+
+async function api(path, body) {
+  const res = await fetch(path, body === undefined ? {} : {
+    method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.detail || res.statusText);
+  return data;
+}
+
+const isApproved = r => ["yes","y","true","1","x","approved"].includes((r.approved || "").trim().toLowerCase());
+const statusKind = s => s.includes("error") ? "error" : (s || "new");
+const hasContent = r => table === "images" ? !!r.new_alt : !!r.new_description_html;
+const flagsOf = r => { try { return JSON.parse(r.guess_flags || "[]"); } catch { return []; } };
+
+const FILTERS = {
+  all: ["All", () => true],
+  review: ["Needs review", r => ["generated", "edited"].includes(r.status) && !isApproved(r)],
+  guesses: ["Has guesses", r => flagsOf(r).length > 0],
+  approved: ["Approved, not pushed", r => isApproved(r) && r.status !== "published"],
+  published: ["Published", r => r.status === "published"],
+  restored: ["Undone", r => r.status === "restored"],
+  error: ["Errors", r => statusKind(r.status) === "error"],
+};
+
+function renderFilters() {
+  const box = $("#filters");
+  box.replaceChildren();
+  for (const [key, [label, test]] of Object.entries(FILTERS)) {
+    if (key === "guesses" && table === "images") continue;
+    const b = document.createElement("button");
+    b.textContent = `${label} (${rows.filter(test).length})`;
+    if (key === filter) b.className = "active";
+    b.onclick = () => { filter = key; render(); };
+    box.append(b);
+  }
+}
+
+function updateCounter(card, field) {
+  const span = $(`[data-count="${field}"]`, card);
+  if (!span) return;
+  const len = $(`[data-edit="${field}"]`, card).value.length;
+  span.textContent = `${len}/${span.dataset.max}`;
+  span.className = len > Number(span.dataset.max) ? "over" : "";
+}
+
+// Save one row's edits to the CSV
+async function save(card, row, body) {
+  const note = $(".saved", card);
+  try {
+    Object.assign(row, await api(`/api/${table}/update`, { key: row[KEYS[table]], ...body }));
+    note.textContent = "Saved ✓";
+    renderFilters();
+    fillBadge(card, row);
+    $("[data-approve]", card).checked = isApproved(row);
+  } catch (e) {
+    note.textContent = "";
+    alert("Could not save: " + e.message);
+  }
+  setTimeout(() => (note.textContent = ""), 1500);
+}
+
+function fillBadge(card, row) {
+  const badge = $(".badge", card);
+  badge.className = "badge " + statusKind(row.status);
+  badge.textContent = row.status === "restored" ? "undone" : (row.status || "new");
+  fillUndo(card, row);
+}
+
+// Version 3: Undo puts back what Shopify had before we published
+function canUndo(row) {
+  const info = backupInfo[row[KEYS[table]]];
+  return ["published", "edited"].includes(row.status) || (row.status === "restored" && info && info.count > 0);
+}
+
+function fillUndo(card, row) {
+  const btn = $("[data-undo]", card), note = $(".backup-note", card);
+  if (!btn) return;
+  const info = backupInfo[row[KEYS[table]]];
+  btn.hidden = !OWNER || !canUndo(row);
+  btn.textContent = row.status === "restored" ? "↶ Undo one more step" : "↶ Undo";
+  note.textContent = !canUndo(row) ? "" :
+    info ? `Backup saved ${info.last}` : "Undo uses the original text from the CSV";
+}
+
+// Version 2: show flagged guesses with a "remove" button
+function fillGuesses(card, row) {
+  const box = $(".guesses", card);
+  const flags = flagsOf(row);
+  box.replaceChildren();
+  if (!row.new_description_html) { box.style.display = "none"; return; }
+  box.style.display = "";
+  if (!row.guess_flags) {
+    box.className = "guesses unchecked";
+    box.textContent = "Not checked for guesses yet. Click “Check for guesses” at the top.";
+    return;
+  }
+  if (!flags.length) {
+    box.className = "guesses clean";
+    box.textContent = "✓ Guess checker: everything is backed by your " + NAMES[table] + " info.";
+    return;
+  }
+  box.className = "guesses has";
+  const title = document.createElement("strong");
+  title.textContent = `⚠ ${flags.length} possible guess${flags.length > 1 ? "es" : ""}. The AI wasn't given these facts:`;
+  const list = document.createElement("ul");
+  for (const f of flags) {
+    const li = document.createElement("li");
+    const q = document.createElement("q"); q.textContent = f.text;
+    const why = document.createElement("span"); why.className = "why"; why.textContent = f.reason ? " — " + f.reason : "";
+    li.append(q, why);
+    list.append(li);
+  }
+  const btn = document.createElement("button");
+  btn.className = "warn";
+  btn.textContent = "Remove guesses from description";
+  btn.onclick = async () => {
+    try {
+      Object.assign(row, await api(`/api/${table}/remove_guesses`, { key: row[KEYS[table]] }));
+      $('[data-edit="new_description_html"]', card).value = row.new_description_html;
+      fillGuesses(card, row); fillBadge(card, row); renderFilters();
+      const left = flagsOf(row).length;
+      $(".saved", card).textContent = left ? `Removed. ${left} left in the meta text - edit those by hand.` : "Guesses removed ✓";
+    } catch (e) { alert(e.message); }
+  };
+  box.append(title, list);
+  if (OWNER) box.append(btn);
+}
+
+function buildCard(row) {
+  const tpl = table === "images" ? "#img-tpl" : "#seo-tpl";
+  const card = $(tpl).content.firstElementChild.cloneNode(true);
+
+  // Read-only text (textContent = safe, never runs HTML)
+  for (const el of card.querySelectorAll("[data-f]")) el.textContent = row[el.dataset.f] || "—";
+  fillBadge(card, row);
+
+  if (table === "images") {
+    const img = $(".thumb", card);
+    img.src = row.image_url + (row.image_url.includes("?") ? "&" : "?") + "width=400";
+    img.alt = row.new_alt || row.current_alt || "";
+  } else {
+    fillGuesses(card, row);
+    $("[data-preview]", card).addEventListener("click", e => {
+      e.preventDefault();
+      let frame = $("iframe", card);
+      if (frame) { frame.remove(); e.target.textContent = "Show preview"; return; }
+      frame = document.createElement("iframe");
+      frame.setAttribute("sandbox", "");   // scripts can't run inside the preview
+      frame.srcdoc = `<body style="font-family:system-ui;font-size:14px">${$("textarea", card).value}</body>`;
+      $("textarea", card).after(frame);
+      e.target.textContent = "Hide preview";
+    });
+  }
+
+  // Editable fields: save when you leave the field
+  for (const el of card.querySelectorAll("[data-edit]")) {
+    const field = el.dataset.edit;
+    el.value = row[field] || "";
+    el.readOnly = !OWNER;
+    el.addEventListener("input", () => updateCounter(card, field));
+    el.addEventListener("change", () => save(card, row, { fields: { [field]: el.value } }));
+    updateCounter(card, field);
+  }
+
+  $("[data-undo]", card).onclick = () => {
+    const name = row[table === "images" ? "product_title" : "title"];
+    if (!confirm(`Put back the old ${NAMES[table]} text for "${name}" on your live Shopify store?
+
+The AI text stays here, so you can publish it again later.`)) return;
+    startJob(`/api/${table}/undo`, { keys: [row[KEYS[table]]] });
+  };
+
+  const approve = $("[data-approve]", card);
+  approve.checked = isApproved(row);
+  approve.disabled = !OWNER || !hasContent(row);
+  approve.addEventListener("change", () => save(card, row, { approved: approve.checked }));
+  return card;
+}
+
+function render() {
+  renderFilters();
+  const list = $("#list");
+  const visible = rows.filter(FILTERS[filter][1]);
+  if (!visible.length) {
+    list.innerHTML = `<div class="empty">${rows.length ? "Nothing in this view." :
+      (OWNER ? "Nothing here yet. Click <b>1. Generate</b> to fetch from Shopify and write AI content." : "Nothing here yet.")}</div>`;
+    return;
+  }
+  list.replaceChildren(...visible.map(buildCard));
+}
+
+async function loadRows() {
+  try {
+    [rows, backupInfo] = await Promise.all([api(`/api/${table}/rows`), api(`/api/${table}/backups`)]);
+    render();
+  }
+  catch (e) { alert("Could not load: " + e.message); }
+}
+
+// ---- tabs (the URL #hash remembers the tab, e.g. /review#images) ----
+function selectTab() {
+  const wanted = location.hash.slice(1);
+  table = KEYS[wanted] ? wanted : "products";
+  filter = "all";
+  document.querySelectorAll("#tabs a").forEach(a => a.classList.toggle("active", a.dataset.table === table));
+  $("#btn-check").style.display = table === "images" ? "none" : "";
+  $("#download").href = `/download/${table}`;
+  loadRows();
+}
+window.addEventListener("hashchange", selectTab);
+
+// ---- background jobs ----
+function setBusy(busy) {
+  for (const id of ["#btn-generate", "#btn-push", "#btn-check"]) $(id).disabled = busy;
+  document.querySelectorAll("[data-undo]").forEach(b => (b.disabled = busy));
+}
+
+async function pollJob() {
+  const job = await api("/api/job");
+  const log = $("#log");
+  if (job.log.length) {
+    log.style.display = "block";
+    log.textContent = job.log.join("\n");
+    log.scrollTop = log.scrollHeight;
+  }
+  setBusy(job.running);
+  if (job.running) {
+    setTimeout(pollJob, 1500);
+    if (job.table === table && !["push", "undo"].includes(job.kind)) loadRows(); // show items as they are done
+  } else {
+    loadRows();
+  }
+}
+
+async function startJob(path, body) {
+  try { await api(path, body); setBusy(true); pollJob(); }
+  catch (e) { alert(e.message); }
+}
+
+$("#btn-generate").onclick = () => {
+  const limit = parseInt($("#limit").value, 10);
+  startJob(`/api/${table}/generate`, { limit: limit > 0 ? limit : null, regenerate: $("#regenerate").checked });
+};
+$("#btn-check").onclick = () => startJob(`/api/${table}/check`, { recheck: false });
+$("#btn-push").onclick = () => {
+  const dry = $("#dryrun").checked;
+  const count = rows.filter(r => isApproved(r) && r.status !== "published").length;
+  if (!dry && !confirm(`Publish ${count} approved ${NAMES[table]}(s) to your live Shopify store?`)) return;
+  startJob(`/api/${table}/push`, { dry_run: dry });
+};
+$("#btn-reload").onclick = loadRows;
+
+window.mePromise.then(me => {
+  OWNER = me.owner;
+  if (!me.can_view) {
+    $("#list").innerHTML = '<div class="empty">Please <a href="/login?next=/review">log in</a> to see the results.</div>';
+    $("header").style.display = "none";
+    return;
+  }
+  selectTab();
+  pollJob(); // in case a job is already running
+});
+</script>
+</body>
+</html>

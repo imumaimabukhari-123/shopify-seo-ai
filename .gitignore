@@ -1,0 +1,17 @@
+.env
+__pycache__/
+*.pyc
+.venv/
+venv/
+seo_results.csv
+*.tmp
+collection_results.csv
+alt_text_results.csv
+backups.csv
+audit.json
+stores.json
+stores/
+
+# The online demo shows this copy of the MAIN test store results (no secrets)
+!demo_data/*.csv
+!demo_data/audit.json

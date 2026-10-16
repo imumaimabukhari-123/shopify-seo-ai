@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SEO Audit</title>
+<link rel="stylesheet" href="/static/style.css?v=3">
+<style>
+  .wrap { max-width: 1000px; margin: 0 auto; padding: 0 24px 60px; }
+  @media (max-width: 600px) { .wrap { padding: 0 16px 40px; } }
+  .intro { padding: 40px 0 24px; }
+  .pill { display: inline-block; background: #fff5d6; color: var(--amber); font-size: 12px; font-weight: 700;
+          padding: 3px 10px; border-radius: 20px; margin-bottom: 10px; }
+  h1 { font-size: clamp(26px, 4vw, 36px); margin: 0 0 8px; letter-spacing: -0.02em; }
+  .intro p { color: var(--muted); margin: 0; max-width: 640px; }
+  h2 { font-size: 20px; margin: 0 0 4px; }
+  .sub { color: var(--muted); margin: 0 0 16px; font-size: 14px; }
+
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 22px; margin-bottom: 22px; }
+  form { display: flex; gap: 10px; flex-wrap: wrap; }
+  input[type=text] { flex: 1; min-width: 200px; padding: 11px 13px; border: 1px solid var(--line); border-radius: 10px; font: inherit; }
+  input[type=text]:focus { outline: 2px solid var(--green-soft); border-color: var(--green); }
+  button { font: inherit; border: 1px solid var(--line); background: var(--card); padding: 10px 18px; border-radius: 10px; cursor: pointer; font-weight: 600; }
+  button.primary { background: var(--green); border-color: var(--green); color: #fff; }
+  button:disabled { opacity: .55; cursor: not-allowed; }
+  .error { color: var(--red); margin-top: 10px; font-size: 14px; }
+  .wait { color: var(--muted); margin-top: 10px; font-size: 14px; }
+  #log { background: #1e1e1e; color: #d4d4d4; font: 12px/1.5 Consolas, monospace; padding: 10px 14px; border-radius: 8px;
+         max-height: 160px; overflow: auto; white-space: pre-wrap; margin-top: 12px; display: none; }
+  .owner-only { display: none; }
+  body.is-owner .owner-only { display: inline-block; }
+
+  /* report */
+  .report { margin-top: 18px; }
+  .summary { display: grid; grid-template-columns: 170px 1fr; gap: 26px; align-items: center; }
+  @media (max-width: 640px) { .summary { grid-template-columns: 1fr; justify-items: center; } }
+  .ring { position: relative; width: 160px; height: 160px; }
+  .ring svg { transform: rotate(-90deg); }
+  .ring .num { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; }
+  .ring b { font-size: 40px; line-height: 1; display: block; }
+  .ring span { font-size: 13px; color: var(--muted); }
+  .meta-line { color: var(--muted); font-size: 13px; margin-bottom: 12px; overflow-wrap: anywhere; }
+  .grade { font-size: 20px; font-weight: 700; margin-bottom: 2px; }
+  .bars { display: grid; gap: 9px; width: 100%; }
+  .bar-row { display: grid; grid-template-columns: 140px 1fr 44px; gap: 10px; align-items: center; font-size: 14px; }
+  @media (max-width: 480px) { .bar-row { grid-template-columns: 110px 1fr 40px; font-size: 13px; } }
+  .track { height: 9px; background: #eceef0; border-radius: 9px; overflow: hidden; }
+  .fill { height: 100%; border-radius: 9px; }
+  .bar-row .pct { text-align: right; font-weight: 600; }
+  .notes { margin: 16px 0 0; padding-left: 18px; color: var(--muted); font-size: 13px; }
+
+  h3 { font-size: 16px; margin: 26px 0 10px; }
+  .issue { display: grid; grid-template-columns: 12px 1fr auto; gap: 12px; padding: 12px 0; border-top: 1px solid var(--line); align-items: start; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; margin-top: 6px; }
+  .high { background: var(--red); } .medium { background: var(--amber); } .low { background: #8c9196; }
+  .issue b { display: block; }
+  .issue .fix { color: var(--muted); font-size: 14px; }
+  .issue .count { font-size: 13px; color: var(--muted); white-space: nowrap; text-align: right; }
+  .issue .count a { display: block; font-weight: 600; text-decoration: none; margin-top: 2px; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th { text-align: left; font-size: 12px; color: var(--muted); font-weight: 600; padding: 6px 8px; border-bottom: 1px solid var(--line); }
+  td { padding: 9px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  td .kind { color: var(--muted); font-size: 12px; }
+  .score { display: inline-block; min-width: 40px; text-align: center; font-weight: 700; padding: 2px 8px; border-radius: 10px; font-size: 13px; }
+  .chip { display: inline-block; background: #f4f4f5; border-radius: 10px; padding: 1px 8px; margin: 2px 4px 2px 0; font-size: 12px; }
+  .chip.high { background: #fde4df; color: #8a1f0a; } .chip.medium { background: #fff5d6; color: #6b5000; }
+  .chip.low { background: #f1f2f3; color: #44474a; }
+  .ok { color: var(--green); font-size: 13px; }
+  .more { margin-top: 12px; }
+  .cta { margin-top: 22px; background: var(--green-soft); border-radius: 12px; padding: 16px 18px; display: flex;
+         gap: 14px; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+  .cta a.btn { background: var(--green); color: #fff; padding: 10px 18px; border-radius: 10px; font-weight: 600; text-decoration: none; }
+  .table-wrap { overflow-x: auto; }
+  .empty { color: var(--muted); }
+</style>
+</head>
+<body>
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="/"><span class="brand-mark">S</span><span class="brand-text">SEO Generator</span></a>
+    <div class="nav-links">
+      <a href="/">Home</a>
+      <a href="/guide">Guide</a>
+      <a href="/audit" class="active">Audit</a>
+      <a href="/chat">Chat</a>
+      <a href="/review">Review</a>
+    </div>
+  </div>
+</nav>
+<script src="/static/nav.js?v=4"></script>
+
+<div class="wrap">
+  <div class="intro">
+    <span class="pill">VERSION 3</span>
+    <h1>SEO audit &amp; score</h1>
+    <p>Checks every product and collection for the SEO basics Google looks at: meta titles,
+       meta descriptions, descriptions and image alt text. You get a score out of 100 and a list of what to fix.</p>
+  </div>
+
+  <div class="card">
+    <h2>Free audit of any Shopify store</h2>
+    <p class="sub">Type a store's address. It only reads public pages, so no login or access is needed. Takes about 15 seconds.</p>
+    <form id="public-form">
+      <input type="text" id="url" placeholder="e.g. mystore.com or mystore.myshopify.com" autocomplete="url" required>
+      <button class="primary" id="public-btn">Check my store</button>
+    </form>
+    <div id="public-msg"></div>
+    <div id="public-report"></div>
+  </div>
+
+  <div class="card">
+    <h2>Full audit of the connected store</h2>
+    <p class="sub" id="full-sub">Uses the Shopify connection, so it sees everything, including the hidden meta tags of every product and collection.</p>
+    <button class="primary owner-only" id="full-btn">Run full audit</button>
+    <div id="log"></div>
+    <div id="full-report"><p class="empty">Loading…</p></div>
+  </div>
+</div>
+
+<script>
+const $ = s => document.querySelector(s);
+const el = (tag, cls, text) => {
+  const e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (text !== undefined) e.textContent = text;   // textContent = safe, never runs HTML
+  return e;
+};
+const colour = n => n >= 90 ? "#008060" : n >= 75 ? "#3f8f3a" : n >= 50 ? "#b98900" : "#d72c0d";
+// Where the tool fixes each kind of problem
+const FIX_LINK = { "Image alt text": "/review#images" };
+let OWNER = false;
+let HIRE_URL = "";   // e.g. the Fiverr gig, set in the server settings
+
+function ring(score) {
+  const r = 70, c = 2 * Math.PI * r;
+  const box = el("div", "ring");
+  box.innerHTML = `<svg width="160" height="160" aria-hidden="true">
+      <circle cx="80" cy="80" r="${r}" fill="none" stroke="#eceef0" stroke-width="14"/>
+      <circle cx="80" cy="80" r="${r}" fill="none" stroke="${colour(score)}" stroke-width="14" stroke-linecap="round"
+              stroke-dasharray="${c * score / 100} ${c}"/></svg>`;
+  const num = el("div", "num");
+  const inner = el("div");
+  inner.append(el("b", "", String(score)), el("span", "", "out of 100"));
+  num.append(inner);
+  box.append(num);
+  return box;
+}
+
+function renderReport(report, target) {
+  const box = el("div", "report");
+  const pub = report.source === "public";
+
+  // score + categories
+  const summary = el("div", "summary");
+  const right = el("div");
+  const grade = el("div", "grade", report.grade);
+  grade.style.color = colour(report.score);
+  const counts = report.counts.collection ? `${report.counts.product} products, ${report.counts.collection} collections`
+                                          : `${report.counts.product} products`;
+  right.append(grade, el("div", "meta-line", `${report.store} · ${counts} · checked ${report.ran_at}`));
+  const bars = el("div", "bars");
+  for (const [name, cat] of Object.entries(report.categories)) {
+    const row = el("div", "bar-row");
+    const track = el("div", "track"), fill = el("div", "fill");
+    fill.style.width = cat.score + "%";
+    fill.style.background = colour(cat.score);
+    track.append(fill);
+    row.title = `${cat.passed} of ${cat.total} pages pass`;
+    row.append(el("span", "", name), track, el("span", "pct", cat.score + "%"));
+    bars.append(row);
+  }
+  right.append(bars);
+  summary.append(ring(report.score), right);
+  box.append(summary);
+  if (report.notes.length) {
+    const notes = el("ul", "notes");
+    report.notes.forEach(n => notes.append(el("li", "", n)));
+    box.append(notes);
+  }
+
+  // top problems
+  box.append(el("h3", "", report.top_issues.length ? "What to fix first" : "No problems found 🎉"));
+  for (const t of report.top_issues) {
+    const row = el("div", "issue");
+    const text = el("div");
+    text.append(el("b", "", t.message), el("span", "fix", t.fix));
+    const count = el("div", "count", `${t.count} page${t.count > 1 ? "s" : ""}`);
+    if (t.auto_fix && !pub && OWNER) {
+      const a = el("a", "", "Fix with AI →");
+      a.href = FIX_LINK[t.category] || (t.check.startsWith("desc") || t.check.startsWith("meta") ? "/review#products" : "/review");
+      count.append(a);
+    }
+    row.append(el("span", "dot " + t.severity), text, count);
+    box.append(row);
+  }
+
+  // every page
+  const items = report.items;
+  box.append(el("h3", "", "Every page, lowest score first"));
+  const wrap = el("div", "table-wrap");
+  const table = el("table");
+  table.innerHTML = "<thead><tr><th>Page</th><th>Score</th><th>Problems</th></tr></thead>";
+  const body = el("tbody");
+  const SHOW = 12;
+  items.forEach((item, i) => {
+    const tr = el("tr");
+    if (i >= SHOW) tr.hidden = true;
+    const page = el("td");
+    if (pub && item.url) {
+      const a = el("a", "", item.title);
+      a.href = `https://${report.store}${item.url}`;
+      a.target = "_blank"; a.rel = "noopener noreferrer";
+      page.append(a);
+    } else page.append(el("span", "", item.title));
+    page.append(el("div", "kind", item.kind));
+    const sc = el("td");
+    const pill = el("span", "score", item.score);
+    pill.style.background = colour(item.score) + "1f";
+    pill.style.color = colour(item.score);
+    sc.append(pill);
+    const probs = el("td");
+    if (!item.issues.length) probs.append(el("span", "ok", "✓ All good"));
+    item.issues.forEach(x => probs.append(el("span", "chip " + x.severity, x.message)));
+    tr.append(page, sc, probs);
+    body.append(tr);
+  });
+  table.append(body);
+  wrap.append(table);
+  box.append(wrap);
+  if (items.length > SHOW) {
+    const more = el("button", "more", `Show all ${items.length} pages`);
+    more.onclick = () => { body.querySelectorAll("tr[hidden]").forEach(tr => (tr.hidden = false)); more.remove(); };
+    box.append(more);
+  }
+
+  if (pub) {
+    const cta = el("div", "cta");
+    cta.append(el("span", "", "Want these problems fixed? This tool writes the missing SEO text with AI, and you approve everything before it goes live."));
+    const a = el("a", "btn", "Get my store fixed");
+    a.href = HIRE_URL || "/#developer";
+    if (HIRE_URL) { a.target = "_blank"; a.rel = "noopener noreferrer"; }
+    cta.append(a);
+    box.append(cta);
+  }
+  target.replaceChildren(box);
+}
+
+// ---- free public audit ----
+$("#public-form").addEventListener("submit", async e => {
+  e.preventDefault();
+  const btn = $("#public-btn"), msg = $("#public-msg");
+  btn.disabled = true;
+  msg.className = "wait"; msg.textContent = "Checking the store… this takes about 15 seconds.";
+  $("#public-report").replaceChildren();
+  try {
+    const res = await fetch("/api/audit/public", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ url: $("#url").value }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.detail || "Something went wrong.");
+    msg.textContent = "";
+    renderReport(data, $("#public-report"));
+  } catch (err) {
+    msg.className = "error"; msg.textContent = err.message;
+  }
+  btn.disabled = false;
+});
+
+// ---- full audit of the connected store ----
+async function loadFull() {
+  const report = await fetch("/api/audit").then(r => (r.ok ? r.json() : null)).catch(() => null);
+  if (report) renderReport(report, $("#full-report"));
+  else $("#full-report").innerHTML = `<p class="empty">${OWNER ? "No audit yet. Click <b>Run full audit</b>." : "No audit has been run yet."}</p>`;
+}
+
+async function pollJob() {
+  const job = await fetch("/api/job").then(r => r.json());
+  if (job.kind !== "audit") { $("#full-btn").disabled = job.running; if (job.running) setTimeout(pollJob, 1500); return; }
+  const log = $("#log");
+  log.style.display = "block";
+  log.textContent = job.log.join("\n") || "Starting…";
+  $("#full-btn").disabled = job.running;
+  if (job.running) setTimeout(pollJob, 1200);
+  else loadFull();
+}
+
+$("#full-btn").onclick = async () => {
+  const res = await fetch("/api/audit/run", { method: "POST" });
+  if (!res.ok) { alert((await res.json().catch(() => ({}))).detail || "Couldn't start the audit."); return; }
+  $("#full-btn").disabled = true;
+  pollJob();
+};
+
+window.mePromise.then(me => {
+  OWNER = me.owner;
+  HIRE_URL = me.hire_url || "";
+  if (!me.can_view) {
+    $("#full-report").innerHTML = '<p class="empty">Please <a href="/login?next=/audit">log in</a> to see the audit.</p>';
+    $("#public-btn").disabled = true;
+    return;
+  }
+  if (!OWNER) $("#full-sub").textContent = "Demo: the full audit of our free Shopify test store, after the tool fixed its SEO.";
+  loadFull();
+  if (OWNER) pollJob();
+});
+</script>
+</body>
+</html>

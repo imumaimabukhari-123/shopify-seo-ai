@@ -1,0 +1,426 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>User Guide</title>
+<meta name="author" content="Syeda Umaima">
+<link rel="stylesheet" href="/static/style.css?v=3">
+<style>
+  .layout { max-width: 1100px; margin: 0 auto; padding: 32px 24px 80px; display: grid; grid-template-columns: 220px 1fr; gap: 40px; }
+  @media (max-width: 860px) { .layout { grid-template-columns: 1fr; padding: 24px 16px 60px; gap: 20px; } }
+
+  /* table of contents */
+  .toc { position: sticky; top: 84px; align-self: start; font-size: 14px; }
+  .toc b { display: block; font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); margin-bottom: 8px; }
+  .toc a { display: block; padding: 5px 10px; border-radius: 6px; color: var(--text); text-decoration: none; }
+  .toc a:hover { background: var(--card); }
+  @media (max-width: 860px) {
+    .toc { position: static; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px; }
+    .toc a { display: inline-block; }
+  }
+
+  article { min-width: 0; }
+  h1 { font-size: clamp(28px, 4vw, 38px); margin: 0 0 8px; letter-spacing: -0.02em; }
+  .intro { color: var(--muted); font-size: 17px; margin: 0 0 28px; }
+  section { margin-bottom: 44px; scroll-margin-top: 80px; }
+  h2 { font-size: 23px; margin: 0 0 12px; letter-spacing: -0.01em; }
+  h3 { font-size: 17px; margin: 22px 0 8px; }
+  p, li { max-width: 72ch; }
+  .box { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 18px 20px; margin: 14px 0; }
+  .tip { background: var(--green-soft); border: 0; }
+  .warn { background: #fff8e6; border: 1px solid #f1d98a; }
+  .box > :first-child { margin-top: 0; } .box > :last-child { margin-bottom: 0; }
+
+  /* glossary */
+  dl { display: grid; grid-template-columns: 200px 1fr; gap: 0; margin: 0; background: var(--card); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+  dt, dd { padding: 12px 16px; margin: 0; border-top: 1px solid var(--line); }
+  dt { font-weight: 700; background: #fafafa; }
+  dt:first-of-type, dt:first-of-type + dd { border-top: 0; }
+  @media (max-width: 600px) { dl { grid-template-columns: 1fr; } dd { border-top: 0; padding-top: 0; } }
+
+  /* step lists */
+  ol.steps { counter-reset: s; list-style: none; padding: 0; margin: 10px 0; }
+  ol.steps > li { counter-increment: s; position: relative; padding: 4px 0 10px 42px; }
+  ol.steps > li::before { content: counter(s); position: absolute; left: 0; top: 2px; width: 28px; height: 28px; border-radius: 50%;
+                          background: var(--green-soft); color: var(--green-dark); font-weight: 700; display: grid; place-items: center; font-size: 14px; }
+
+  .pages { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  @media (max-width: 600px) { .pages { grid-template-columns: 1fr; } }
+  .page-card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px; text-decoration: none; color: var(--text); }
+  .page-card:hover { border-color: var(--green); }
+  .page-card b { display: block; margin-bottom: 4px; color: var(--green-dark); }
+  .page-card span { color: var(--muted); font-size: 14px; }
+
+  code, kbd { background: #f1f2f3; border: 1px solid var(--line); border-radius: 5px; padding: 1px 6px; font: 13px Consolas, monospace; }
+  pre { background: #1e1e1e; color: #d4d4d4; padding: 14px 16px; border-radius: 10px; overflow-x: auto; font: 13px/1.5 Consolas, monospace; }
+  .chat-examples { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
+  .chat-examples span { background: var(--green-soft); color: var(--green-dark); padding: 6px 12px; border-radius: 20px; font-size: 14px; }
+
+  details { background: var(--card); border: 1px solid var(--line); border-radius: 12px; margin: 10px 0; }
+  summary { cursor: pointer; padding: 14px 18px; font-weight: 600; }
+  details > div { padding: 0 18px 16px; }
+
+  .contact { background: var(--text); color: #fff; border-radius: 14px; padding: 26px; }
+  .contact h2 { color: #fff; }
+  .contact p { color: #d0d2d4; }
+  .contact a.btn { display: inline-block; background: var(--green); color: #fff; padding: 11px 20px; border-radius: 10px; text-decoration: none; font-weight: 600; overflow-wrap: anywhere; }
+</style>
+</head>
+<body>
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="/"><span class="brand-mark">S</span><span class="brand-text">SEO Generator</span></a>
+    <div class="nav-links">
+      <a href="/">Home</a>
+      <a href="/guide" class="active">Guide</a>
+      <a href="/audit">Audit</a>
+      <a href="/chat">Chat</a>
+      <a href="/review">Review</a>
+    </div>
+  </div>
+</nav>
+
+<div class="layout">
+  <aside class="toc">
+    <b>On this page</b>
+    <a href="#what">What it does</a>
+    <a href="#words">Words you'll see</a>
+    <a href="#pages">The pages</a>
+    <a href="#demo">Demo vs owner</a>
+    <a href="#products">Product SEO</a>
+    <a href="#guesses">Guess checker</a>
+    <a href="#images">Image alt text</a>
+    <a href="#collections">Collections</a>
+    <a href="#undo">Backup &amp; undo</a>
+    <a href="#audit">SEO audit</a>
+    <a href="#stores">Client stores</a>
+    <a href="#chat">Using the chat</a>
+    <a href="#excel">Excel / CSV</a>
+    <a href="#safety">Safety</a>
+    <a href="#setup">Set up your store</a>
+    <a href="#faq">FAQ</a>
+  </aside>
+
+  <article>
+    <h1>User Guide</h1>
+    <p class="intro">Everything you need to use the Shopify AI SEO Generator, explained simply.
+       You don't need to know anything about Shopify or SEO to follow this.</p>
+
+    <!-- ------------------------------------------------------------ -->
+    <section id="what">
+      <h2>What this tool does</h2>
+      <p>When people search on Google, it decides which shops to show using the text on each page.
+         Good text = more visitors. Writing it by hand for hundreds of products takes days.</p>
+      <p>This tool connects to a Shopify store and uses AI to write that text for you:</p>
+      <ul>
+        <li><b>Product descriptions</b>: the text shoppers read on a product page.</li>
+        <li><b>Meta titles &amp; meta descriptions</b>: the blue headline and the short grey text Google shows in its results.</li>
+        <li><b>Image alt text</b>: a short description of each product photo, for Google Images and for blind shoppers.</li>
+        <li><b>Collection pages</b>: text for category pages like "Snowboards".</li>
+      </ul>
+      <p>It can also <b>score a store's SEO</b> out of 100, <b>undo</b> anything it published, and work on <b>several client stores</b> (Version 3).</p>
+      <div class="box tip"><b>The key idea:</b> the AI writes, <b>you decide</b>. Nothing changes in the
+        store until you approve it and press Publish.</div>
+    </section>
+
+    <!-- ------------------------------------------------------------ -->
+    <section id="words">
+      <h2>Words you'll see</h2>
+      <dl>
+        <dt>SEO</dt><dd>Search Engine Optimisation: making pages easy for Google to understand, so they show up higher in search results.</dd>
+        <dt>Shopify</dt><dd>A popular platform for running an online shop.</dd>
+        <dt>Dev store</dt><dd>A free practice Shopify store for developers. The demo uses one with sample snowboards.</dd>
+        <dt>Product</dt><dd>One item for sale, e.g. "The Complete Snowboard".</dd>
+        <dt>Collection</dt><dd>A group of products, like a category page ("Snowboards", "Gift ideas").</dd>
+        <dt>Meta title</dt><dd>The clickable blue headline in Google results. Best under <b>60 characters</b>.</dd>
+        <dt>Meta description</dt><dd>The short summary under that headline. Best around <b>140–160 characters</b>.</dd>
+        <dt>Alt text</dt><dd>A short written description of a photo (under <b>125 characters</b>). Google reads it, and so do screen readers for blind shoppers.</dd>
+        <dt>Guess</dt><dd>Something the AI wrote that isn't backed by real product information, e.g. "waterproof" when nobody said it was.</dd>
+        <dt>Approve</dt><dd>Your OK that a piece of text is ready to go live.</dd>
+        <dt>Dry run</dt><dd>A practice publish: it lists what <i>would</i> change, but changes nothing.</dd>
+        <dt>Push / Publish</dt><dd>Sending approved text to the real Shopify store.</dd>
+        <dt>CSV</dt><dd>A simple spreadsheet file you can open in Excel or Google Sheets.</dd>
+        <dt>Backup</dt><dd>A copy of what the store had right before something was published. Undo uses it.</dd>
+        <dt>Audit</dt><dd>A check of every page against SEO rules, with a score out of 100.</dd>
+        <dt>Client store</dt><dd>Another person's Shopify store that you work on, connected with their permission.</dd>
+      </dl>
+    </section>
+
+    <!-- ------------------------------------------------------------ -->
+    <section id="pages">
+      <h2>The pages</h2>
+      <div class="pages">
+        <a class="page-card" href="/"><b>Home</b><span>What the project is, all versions, live numbers and the developer.</span></a>
+        <a class="page-card" href="/guide"><b>Guide</b><span>This page.</span></a>
+        <a class="page-card" href="/audit"><b>Audit</b><span>SEO score out of 100 and what to fix. Free check for any Shopify store.</span></a>
+        <a class="page-card" href="/chat"><b>Chat</b><span>Ask questions or give instructions in plain English.</span></a>
+        <a class="page-card" href="/review"><b>Review</b><span>See every result side by side with the original. Edit, approve, publish and undo.</span></a>
+        <a class="page-card" href="/stores"><b>Stores</b><span>Owner only: connect client stores and pick which one to work on.</span></a>
+      </div>
+    </section>
+
+    <!-- ------------------------------------------------------------ -->
+    <section id="demo">
+      <h2>Demo vs owner</h2>
+      <p>This website can be used in two ways:</p>
+      <div class="box">
+        <h3>👀 Visitor (no login needed)</h3>
+        <ul>
+          <li>Look around every page and read all the AI results on the <a href="/review">Review</a> page.</li>
+          <li>Ask the <a href="/chat">Chat</a> questions, e.g. "What does the guess checker do?" (limited to 10 messages per hour).</li>
+          <li>Buttons that change things are hidden. The demo is <b>read-only</b>, so nobody can change the store.</li>
+        </ul>
+        <h3>🔑 Owner (logged in)</h3>
+        <ul>
+          <li>Click <b>Owner login</b> in the top bar and enter the password.</li>
+          <li>Generate, edit, approve and publish, on the Review page or by asking the chat.</li>
+          <li>Click <b>Log out</b> in the top bar when you're done.</li>
+        </ul>
+      </div>
+      <div class="box tip">Running the tool on your own computer? Then there's no login at all. Only you can reach it.</div>
+    </section>
+
+    <!-- ------------------------------------------------------------ -->
+    <section id="products">
+      <h2>Product SEO <small>(Version 1)</small></h2>
+      <p>Write new descriptions, meta titles and meta descriptions for your products.</p>
+      <ol class="steps">
+        <li>Open <a href="/review#products">Review</a> → <b>Products</b> tab.</li>
+        <li>For a first try, type <code>3</code> in <b>Limit</b>, then click <b>1. Generate</b>. A black box shows progress. Each product takes about 10–20 seconds.</li>
+        <li>Read each product card. The <b>left</b> side is what's in the store now; the <b>right</b> side is the AI's version.</li>
+        <li>Change anything you like by typing in the boxes. It saves when you click outside the box. The counters (e.g. <code>43/60</code>) turn red if text is too long. Click <b>Show preview</b> to see the description as shoppers will.</li>
+        <li>Tick <b>Approve</b> on the ones you're happy with.</li>
+        <li>Tick <b>Dry run</b> and click <b>2. Push approved to Shopify</b>. The black box lists what would change. Nothing is changed yet.</li>
+        <li>Untick <b>Dry run</b>, click <b>2. Push approved to Shopify</b> again and confirm. The badge turns green: <b>published</b>.</li>
+      </ol>
+      <div class="box tip">Use the filter buttons (<b>Needs review</b>, <b>Approved, not pushed</b>, <b>Published</b>, <b>Errors</b>) to find things quickly.
+        Leave <b>Limit</b> empty to do all products. Ones that are already done are skipped automatically.</div>
+    </section>
+
+    <!-- ------------------------------------------------------------ -->
+    <section id="guesses">
+      <h2>Guess checker <small>(Version 2)</small></h2>
+      <p>AI sometimes "fills in the gaps" and invents details. Example: it called a snowboard
+         "perfect for the terrain park" when the product information never said that. The guess checker
+         is a second AI that compares the text with the real product facts (name, brand, type, tags, original description)
+         and flags anything that isn't backed up.</p>
+      <ol class="steps">
+        <li>It runs automatically after each Generate. For older text, click <b>Check for guesses</b> at the top of the Review page.</li>
+        <li>Click the <b>Has guesses</b> filter. Each flagged card shows a yellow box listing the guesses and why each one was flagged.</li>
+        <li>Click <b>Remove guesses from description</b> to delete them in one go (the whole bullet point or sentence is removed). Or edit the text yourself.</li>
+        <li>Guesses inside the meta title or meta description aren't removed automatically. Edit those boxes by hand.</li>
+      </ol>
+      <div class="box warn"><b>Few facts = many guesses.</b> If a product has no description at all, almost every specific claim is a guess.
+        The fix is to give the AI more facts: add a short real description (material, size, who it's for) in Shopify, then generate again.</div>
+      <p>A green box (<b>✓ everything is backed by your product info</b>) means nothing was flagged.</p>
+    </section>
+
+    <!-- ------------------------------------------------------------ -->
+    <section id="images">
+      <h2>Image alt text <small>(Version 2)</small></h2>
+      <p>The AI <b>looks at each product photo</b> and writes a short, accurate description, e.g.
+         <i>"The Complete Snowboard showing the teal and purple abstract geometric base and top design."</i></p>
+      <ol class="steps">
+        <li>Open <a href="/review#images">Review</a> → <b>Image alt text</b> tab.</li>
+        <li>Click <b>1. Generate</b>. Each photo appears with its old and new alt text.</li>
+        <li>Edit if needed (max 125 characters), tick <b>Approve</b>, then Dry run → Push as above.</li>
+      </ol>
+    </section>
+
+    <!-- ------------------------------------------------------------ -->
+    <section id="collections">
+      <h2>Collections <small>(Version 2)</small></h2>
+      <p>Collections are category pages. The AI writes their description, meta title and meta description
+         using the collection's name and the products inside it.</p>
+      <ol class="steps">
+        <li>Open <a href="/review#collections">Review</a> → <b>Collections</b> tab.</li>
+        <li>Click <b>1. Generate</b>, check the guesses, edit, approve, then Dry run → Push.</li>
+      </ol>
+    </section>
+
+    <!-- ------------------------------------------------------------ -->
+    <section id="undo">
+      <h2>Backup &amp; undo <small>(Version 3)</small></h2>
+      <p>Changed your mind after publishing? Undo puts the old text back on the store.</p>
+      <ol class="steps">
+        <li>Every time you publish, the tool first saves a <b>backup</b>: an exact copy of what the store had.</li>
+        <li>On the <a href="/review">Review</a> page, published cards have an <b>↶ Undo</b> button. Click it and confirm.</li>
+        <li>The old text is back on Shopify, and the card shows <b>undone</b>. The AI's text is still there, so you can approve and publish it again any time.</li>
+        <li>Clicking <b>Undo one more step</b> goes back one more publish, if there was one.</li>
+      </ol>
+      <div class="box tip">Things published before Version 3 have no exact backup. For those, Undo uses the original text saved in the CSV.
+        It's the same words, but any bold text or bullet lists in the old description are lost.</div>
+      <p>Owners can download every backup as a spreadsheet at <code>/download/backups</code>.</p>
+    </section>
+
+    <!-- ------------------------------------------------------------ -->
+    <section id="audit">
+      <h2>SEO audit &amp; score <small>(Version 3)</small></h2>
+      <p>The <a href="/audit">Audit</a> page checks every product and collection against simple SEO rules and gives each a score out of 100.
+         The store score is the average. It uses no AI, so it's free and takes seconds.</p>
+      <ul>
+        <li><b>Meta titles</b>: missing, longer than 60 characters, very short, or the same on two pages.</li>
+        <li><b>Meta descriptions</b>: missing, longer than 160 characters, or very short.</li>
+        <li><b>Descriptions</b>: missing, or under 50 words (30 for collections).</li>
+        <li><b>Image alt text</b>: photos without alt text, or alt text over 125 characters.</li>
+      </ul>
+      <h3>Two kinds of audit</h3>
+      <div class="box">
+        <p><b>Free audit of any Shopify store:</b> type a store's address. It only reads the store's public pages, so anyone can use it, with no login or access needed.
+           It's a great way to show a possible client what's wrong with their store.</p>
+        <p><b>Full audit:</b> the owner clicks <b>Run full audit</b> (or tells the chat "audit my store"). It uses the Shopify connection, so it also sees the hidden meta tags and checks collections.</p>
+      </div>
+      <p>Problems marked <b>Fix with AI →</b> can be fixed on the Review page: Generate, check, approve, publish. Then run the audit again and watch the score go up.</p>
+    </section>
+
+    <!-- ------------------------------------------------------------ -->
+    <section id="stores">
+      <h2>Client stores <small>(Version 3)</small></h2>
+      <p>Work on a client's store with their permission. Each store keeps its own CSVs, backups and audit, so stores never mix.</p>
+      <ol class="steps">
+        <li>Open <a href="/stores">Stores</a> (owner only). It lists the exact steps, with copy buttons.</li>
+        <li>Make one small app for the client in the Shopify Dev Dashboard, and choose <b>Custom distribution</b> for their store.</li>
+        <li>Paste that app's Client ID and Client secret into <b>Add store</b>, then click <b>Connect</b> and approve on Shopify's page.</li>
+        <li>Click <b>Work on this store</b>. A yellow label in the top bar shows which client store you're on. Review, Audit and Chat now use that store.</li>
+        <li>To go back to the demo store, open Stores and click <b>Work on this store</b> on the main store.</li>
+      </ol>
+      <div class="box warn">Visitors of the public demo <b>always</b> see the main (demo) store, never a client's data.
+        Client app keys and tokens are saved in <code>stores.json</code> on your computer. That file is never uploaded to GitHub.</div>
+    </section>
+
+    <!-- ------------------------------------------------------------ -->
+    <section id="chat">
+      <h2>Using the chat</h2>
+      <p>The <a href="/chat">Chat</a> page does everything above by typing normal sentences. Some examples:</p>
+      <div class="chat-examples">
+        <span>What's the status of everything?</span>
+        <span>Generate SEO for 5 products</span>
+        <span>Check my products for guesses</span>
+        <span>Remove guesses from all products</span>
+        <span>Write alt text for my product images</span>
+        <span>Approve all images</span>
+        <span>Do a dry run push of approved collections</span>
+        <span>What is a meta description?</span>
+        <span>Audit my store</span>
+        <span>What's my SEO score?</span>
+        <span>Undo The Complete Snowboard</span>
+      </div>
+      <p>When a job is running, a live progress box appears in the chat. For a <b>real</b> publish or an undo, the chat
+         always shows a <b>"Yes, …"</b> button first. It never changes the store on its own.</p>
+      <div class="box tip">Visitors can ask questions in the demo chat. Only the owner can make it <i>do</i> things.</div>
+    </section>
+
+    <!-- ------------------------------------------------------------ -->
+    <section id="excel">
+      <h2>Excel / CSV <small>(optional)</small></h2>
+      <p>Prefer spreadsheets? Click <b>Download CSV</b> on the Review page (one file per tab) and open it in Excel or Google Sheets.
+         The <code>new_…</code> columns are the AI's text, and <code>current_…</code> is what's in the store now.
+         On your own computer you can edit the file, type <code>yes</code> in the <b>approved</b> column, save it, close Excel, and then publish.</p>
+    </section>
+
+    <!-- ------------------------------------------------------------ -->
+    <section id="safety">
+      <h2>Safety: nothing changes without you</h2>
+      <ul>
+        <li>Generating only saves suggestions. <b>The store is untouched</b> until you push.</li>
+        <li>Only <b>approved</b> items are published, and each one only once.</li>
+        <li><b>Dry run</b> lets you preview every publish.</li>
+        <li>If you edit text after publishing, it's marked <b>edited</b> and needs approving again.</li>
+        <li>Every publish saves a <b>backup</b> first, and <b>Undo</b> puts the old text back.</li>
+        <li>Empty fields are never sent, so existing text can't be wiped by accident.</li>
+        <li>Online, visitors are read-only and the owner needs a password.</li>
+      </ul>
+    </section>
+
+    <!-- ------------------------------------------------------------ -->
+    <section id="setup">
+      <h2>Set it up for your own store</h2>
+      <p>About 20 minutes, completely free. Click each step to open it.</p>
+
+      <details>
+        <summary>1. Create a free Shopify Partner account</summary>
+        <div>
+          <ol>
+            <li>Go to <b>shopify.com/partners</b> and click <b>Join now</b>.</li>
+            <li>Sign up (e.g. with Google). Choose <b>Create a new partner organization</b>, focus <b>Build apps</b>, and fill in your details.</li>
+          </ol>
+          <div class="box warn">If you see <b>"Start your free trial… $1/month"</b>, you're on the paid store sign-up. Go back and use the Partners page instead.</div>
+        </div>
+      </details>
+
+      <details>
+        <summary>2. Create a free development store</summary>
+        <div>
+          <ol>
+            <li>From the Partners page, click <b>Dev dashboard</b> (bottom-left).</li>
+            <li>Click <b>+ Create a store</b> → choose <b>Dev</b>.</li>
+            <li>Give it a name, pick any plan (it's free on dev stores), and tick <b>Generate test data</b> to get sample products.</li>
+          </ol>
+          <div class="box warn">Create the store from the <b>Dev Dashboard</b>, not with "Create new store" elsewhere. Otherwise the app can't connect.</div>
+        </div>
+      </details>
+
+      <details>
+        <summary>3. Create the app and give it permissions</summary>
+        <div>
+          <ol>
+            <li>In the Dev Dashboard go to <b>Apps</b> and click <b>Create app</b> in the "Get API credentials" bar at the bottom.</li>
+            <li>App name: <code>SEO Generator</code>. Leave App URL as it is and <b>untick "Embed app in Shopify admin"</b>.</li>
+            <li>In <b>Scopes</b>, type: <code>read_products,write_products,read_files,write_files</code></li>
+            <li>Click <b>Release</b>, then <b>Install app</b> and choose your store. (Landing on an "example.com" page afterwards is normal.)</li>
+            <li>Open <b>App settings</b> and copy the <b>Client ID</b> and <b>Secret</b>.</li>
+          </ol>
+        </div>
+      </details>
+
+      <details>
+        <summary>4. Get a free AI key (Google Gemini)</summary>
+        <div>
+          <ol>
+            <li>Go to <b>aistudio.google.com/apikey</b> and sign in with Google.</li>
+            <li>Click <b>Create API key</b> and copy it. No credit card needed.</li>
+          </ol>
+        </div>
+      </details>
+
+      <details>
+        <summary>5. Put the keys in the settings file and start</summary>
+        <div>
+          <p>Copy <code>.env.example</code> to <code>.env</code> and fill in:</p>
+<pre>SHOPIFY_STORE_DOMAIN=your-store.myshopify.com
+SHOPIFY_CLIENT_ID=your-client-id
+SHOPIFY_CLIENT_SECRET=your-secret
+GEMINI_API_KEY=your-gemini-key</pre>
+          <p>Then, in a terminal in the project folder:</p>
+<pre>venv\Scripts\activate
+python cli.py check      # tests the Shopify + AI connection
+python app.py            # starts the website</pre>
+          <p>Open <b>http://127.0.0.1:8001</b>. Keep keys only in <code>.env</code>. Never share that file.</p>
+        </div>
+      </details>
+    </section>
+
+    <!-- ------------------------------------------------------------ -->
+    <section id="faq">
+      <h2>FAQ</h2>
+      <details><summary>Is it really free?</summary><div><p>Yes. Shopify dev stores, the Partner account and the Gemini API free tier cost nothing. The free AI has speed limits, so the tool waits a few seconds between products.</p></div></details>
+      <details><summary>Can it break my store?</summary><div><p>No. It only changes descriptions, meta titles/descriptions and image alt text, and only for items you approve. Prices, stock, orders and design are never touched.</p></div></details>
+      <details><summary>What if the AI writes something wrong?</summary><div><p>That's why everything goes through review. The guess checker flags invented details, and you can edit or remove anything before publishing.</p></div></details>
+      <details><summary>How long does it take?</summary><div><p>About 10–20 seconds per product on the free AI plan (it writes the text, then double-checks it). 100 products ≈ 30 minutes, running by itself.</p></div></details>
+      <details><summary>It says "rate limit" or "429"</summary><div><p>The free AI allowance is used up for the moment. Wait a few minutes and click Generate again. It continues where it stopped.</p></div></details>
+      <details><summary>Does it work on a real (paid) store?</summary><div><p>Yes. The same steps work. Try it on a dev store first, and always use Dry run before publishing.</p></div></details>
+    </section>
+
+    <section class="contact">
+      <h2>Want this for your store?</h2>
+      <p>I'm Syeda Umaima, the developer of this tool. I can set it up for your Shopify store and help improve your SEO.</p>
+      <a class="btn" data-contact href="mailto:imumaimabukhari@gmail.com?subject=Shopify%20SEO%20project">✉ imumaimabukhari@gmail.com</a>
+    </section>
+  </article>
+</div>
+
+<footer style="border-top:1px solid var(--line);padding:24px 16px;color:var(--muted);font-size:13px;text-align:center">© 2026 Syeda Umaima · Shopify AI SEO Generator</footer>
+<script src="/static/nav.js?v=4"></script>
+</body>
+</html>

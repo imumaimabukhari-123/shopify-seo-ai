@@ -1,0 +1,28 @@
+# Render.com "Blueprint": tells Render how to run this website for free.
+# Secrets (sync: false) are NOT stored here - Render asks you for them when you deploy.
+services:
+  - type: web
+    name: shopify-seo-ai
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: python app.py
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: HOST
+        value: 0.0.0.0
+      - key: PUBLIC_DEMO
+        value: "true"
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: SHOPIFY_STORE_DOMAIN
+        sync: false
+      - key: SHOPIFY_CLIENT_ID
+        sync: false
+      - key: SHOPIFY_CLIENT_SECRET
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false

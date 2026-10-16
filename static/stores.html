@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Client Stores</title>
+<link rel="stylesheet" href="/static/style.css?v=3">
+<style>
+  .wrap { max-width: 900px; margin: 0 auto; padding: 0 24px 60px; }
+  @media (max-width: 600px) { .wrap { padding: 0 16px 40px; } }
+  .intro { padding: 40px 0 20px; }
+  .pill { display: inline-block; background: #fff5d6; color: var(--amber); font-size: 12px; font-weight: 700;
+          padding: 3px 10px; border-radius: 20px; margin-bottom: 10px; }
+  h1 { font-size: clamp(26px, 4vw, 34px); margin: 0 0 8px; letter-spacing: -0.02em; }
+  .intro p { color: var(--muted); margin: 0; }
+  h2 { font-size: 19px; margin: 0 0 4px; }
+  .sub { color: var(--muted); margin: 0 0 16px; font-size: 14px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 22px; margin-bottom: 22px; }
+
+  .store { display: flex; gap: 14px; align-items: center; padding: 14px 0; border-top: 1px solid var(--line); flex-wrap: wrap; }
+  .store:first-child { border-top: 0; padding-top: 0; }
+  .store-info { flex: 1; min-width: 200px; }
+  .store-info b { display: block; }
+  .store-info span { color: var(--muted); font-size: 13px; overflow-wrap: anywhere; }
+  .tag { font-size: 12px; font-weight: 700; padding: 2px 9px; border-radius: 20px; white-space: nowrap; }
+  .tag.on { background: #d7f5e9; color: var(--green-dark); }
+  .tag.wait { background: #fff5d6; color: var(--amber); }
+  .tag.active { background: var(--green); color: #fff; }
+  .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  button { font: inherit; border: 1px solid var(--line); background: var(--card); padding: 8px 14px; border-radius: 8px; cursor: pointer; font-weight: 600; }
+  button.primary { background: var(--green); border-color: var(--green); color: #fff; }
+  button.danger { color: var(--red); }
+  button:disabled { opacity: .55; cursor: not-allowed; }
+
+  ol.steps { padding-left: 20px; margin: 0; }
+  ol.steps > li { margin-bottom: 14px; }
+  ol.steps b { color: var(--text); }
+  .steps .label { font-size: 12px; font-weight: 600; color: var(--muted); margin-top: 6px; }
+  .copy { display: flex; gap: 8px; margin-top: 4px; }
+  .copy code { flex: 1; background: #f4f4f5; border: 1px solid var(--line); border-radius: 8px; padding: 7px 10px;
+               font: 13px Consolas, monospace; overflow-wrap: anywhere; }
+  .copy button { padding: 6px 12px; font-size: 13px; }
+  .warn { background: #fff8e6; border: 1px solid #f1d98a; border-radius: 10px; padding: 12px 14px; font-size: 14px; margin-top: 12px; }
+
+  form.add { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 640px) { form.add { grid-template-columns: 1fr; } }
+  label { font-size: 13px; font-weight: 600; display: block; margin-bottom: 4px; }
+  input { width: 100%; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; font: inherit; }
+  input:focus { outline: 2px solid var(--green-soft); border-color: var(--green); }
+  .full { grid-column: 1 / -1; }
+  .msg { font-size: 14px; margin-top: 10px; }
+  .msg.error { color: var(--red); }
+  .msg.ok { color: var(--green); }
+  .locked { text-align: center; color: var(--muted); padding: 60px 0; }
+</style>
+</head>
+<body>
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="/"><span class="brand-mark">S</span><span class="brand-text">SEO Generator</span></a>
+    <div class="nav-links">
+      <a href="/">Home</a>
+      <a href="/guide">Guide</a>
+      <a href="/audit">Audit</a>
+      <a href="/chat">Chat</a>
+      <a href="/review">Review</a>
+    </div>
+  </div>
+</nav>
+<script src="/static/nav.js?v=4"></script>
+
+<div class="wrap" id="page" hidden>
+  <div class="intro">
+    <span class="pill">VERSION 3</span>
+    <h1>Client stores</h1>
+    <p>Connect a client's Shopify store, then pick which store to work on. The Review, Audit and Chat
+       pages always work on the <b>active</b> store. Each store keeps its own CSVs and backups.</p>
+  </div>
+
+  <div class="card">
+    <h2>Your stores</h2>
+    <p class="sub">Visitors of the public demo always see the main store, never a client's data.</p>
+    <div id="list"></div>
+  </div>
+
+  <div class="card">
+    <h2>Connect a new client store</h2>
+    <p class="sub">About 5 minutes. Shopify needs one small app per client store, made in your Dev Dashboard.</p>
+    <ol class="steps">
+      <li>Ask the client for their store's <b>.myshopify.com</b> address
+          (in their Shopify admin: <i>Settings → Domains</i>).</li>
+      <li>Open <a href="https://dev.shopify.com/dashboard" target="_blank" rel="noopener noreferrer">dev.shopify.com/dashboard</a>
+          → <b>Create app</b>. Name it, for example "SEO for <i>client name</i>".</li>
+      <li>In the app's new version, fill in:
+        <div class="label">App URL</div>
+        <div class="copy"><code id="app-url"></code><button data-copy="app-url">Copy</button></div>
+        <div class="label" style="margin-top:8px">Redirect URL</div>
+        <div class="copy"><code id="redirect-url"></code><button data-copy="redirect-url">Copy</button></div>
+        <div class="label" style="margin-top:8px">Scopes</div>
+        <div class="copy"><code id="scopes"></code><button data-copy="scopes">Copy</button></div>
+        <div style="margin-top:8px">Turn <b>off</b> "Embed app in Shopify admin", then click <b>Release</b>.</div>
+      </li>
+      <li>Go to <b>Distribution</b> → <b>Custom distribution</b> → enter the client's .myshopify.com address.
+          (Shopify locks this app to that one store.)</li>
+      <li>From the app's <b>Settings</b>, copy the <b>Client ID</b> and <b>Client secret</b> into the form below and click <b>Add store</b>.</li>
+      <li>Click <b>Connect</b> next to the store and approve. Or send the client the <b>install link</b>
+          from the Distribution page, and they approve it themselves.</li>
+    </ol>
+    <div class="warn" id="local-warn" hidden>
+      ⚠ This website runs on your own computer (<b>127.0.0.1</b>), so the last step only works when
+      <b>you</b> click Connect on this computer. You need access to the client's store for that
+      (they can add you as a staff member or collaborator). Once the site is online, set
+      <code>PUBLIC_URL</code> in the settings, and clients can approve from anywhere.
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Add store</h2>
+    <form class="add" id="add-form">
+      <div><label for="shop">Store address</label><input id="shop" placeholder="client-shop.myshopify.com" required></div>
+      <div><label for="label">Name (for you)</label><input id="label" placeholder="e.g. Sara's Candles"></div>
+      <div><label for="cid">Client ID</label><input id="cid" autocomplete="off" required></div>
+      <div><label for="secret">Client secret</label><input id="secret" type="password" autocomplete="off" required></div>
+      <div class="full"><button class="primary" id="add-btn">Add store</button></div>
+    </form>
+    <div class="msg" id="add-msg"></div>
+  </div>
+</div>
+<div class="locked" id="locked" hidden>Only the owner can manage stores. <a href="/login?next=/stores">Log in</a></div>
+
+<script>
+const $ = s => document.querySelector(s);
+const el = (tag, cls, text) => {
+  const e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (text !== undefined) e.textContent = text;
+  return e;
+};
+
+async function post(path, body) {
+  const res = await fetch(path, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.detail || res.statusText);
+  return data;
+}
+
+function button(text, cls, onclick) {
+  const b = el("button", cls, text);
+  b.onclick = async () => {
+    b.disabled = true;
+    try { await onclick(); } catch (e) { alert(e.message); }
+    b.disabled = false;
+  };
+  return b;
+}
+
+async function load() {
+  const data = await fetch("/api/stores").then(r => r.json());
+  $("#app-url").textContent = data.app_url;
+  $("#redirect-url").textContent = data.redirect_uri;
+  $("#scopes").textContent = data.scopes;
+  $("#local-warn").hidden = !data.is_local;
+
+  const list = $("#list");
+  list.replaceChildren(...data.stores.map(s => {
+    const row = el("div", "store");
+    const info = el("div", "store-info");
+    info.append(el("b", "", s.label), el("span", "", s.shop + (s.connected_at ? ` · connected ${s.connected_at}` : "")));
+    const tag = s.active ? el("span", "tag active", "Active") :
+                s.connected ? el("span", "tag on", "Connected") : el("span", "tag wait", "Not connected yet");
+    const actions = el("div", "actions");
+    if (!s.connected) {
+      actions.append(button("Connect", "primary", async () => {
+        const { url } = await post("/api/stores/connect", { shop: s.shop });
+        window.open(url, "_blank", "noopener");
+        alert("Approve the app on the Shopify page that just opened. When it says \"Store connected\", come back and click OK.");
+        load();
+      }));
+    } else if (!s.active) {
+      actions.append(button("Work on this store", "primary", async () => {
+        await post("/api/stores/activate", { shop: s.shop });
+        location.reload();
+      }));
+    }
+    if (!s.main) {
+      actions.append(button("Remove", "danger", async () => {
+        if (!confirm(`Disconnect ${s.label}? Its files (CSVs, backups) stay on your computer.`)) return;
+        await post("/api/stores/remove", { shop: s.shop });
+        load();
+      }));
+    }
+    row.append(info, tag, actions);
+    return row;
+  }));
+}
+
+document.querySelectorAll("[data-copy]").forEach(b => b.addEventListener("click", () => {
+  navigator.clipboard.writeText($("#" + b.dataset.copy).textContent);
+  b.textContent = "Copied ✓";
+  setTimeout(() => (b.textContent = "Copy"), 1500);
+}));
+
+$("#add-form").addEventListener("submit", async e => {
+  e.preventDefault();
+  const msg = $("#add-msg");
+  msg.className = "msg"; msg.textContent = "";
+  try {
+    const { shop } = await post("/api/stores/add", {
+      shop: $("#shop").value, label: $("#label").value, client_id: $("#cid").value, client_secret: $("#secret").value,
+    });
+    msg.className = "msg ok"; msg.textContent = `Added ${shop}. Now click Connect next to it (above).`;
+    $("#add-form").reset();
+    load();
+  } catch (err) {
+    msg.className = "msg error"; msg.textContent = err.message;
+  }
+});
+
+window.mePromise.then(me => {
+  if (!me.owner) { $("#locked").hidden = false; return; }
+  $("#page").hidden = false;
+  load();
+});
+</script>
+</body>
+</html>

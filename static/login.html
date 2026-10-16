@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Owner Login</title>
+<link rel="stylesheet" href="/static/style.css?v=3">
+<style>
+  .box { max-width: 380px; margin: 70px auto; padding: 0 16px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 28px; }
+  h1 { font-size: 22px; margin: 0 0 6px; }
+  p { color: var(--muted); margin: 0 0 20px; font-size: 14px; }
+  label { font-size: 13px; font-weight: 600; display: block; margin-bottom: 6px; }
+  input { width: 100%; padding: 11px 12px; border: 1px solid var(--line); border-radius: 8px; font: inherit; }
+  input:focus { outline: 2px solid var(--green-soft); border-color: var(--green); }
+  button { width: 100%; margin-top: 14px; padding: 11px; border: 0; border-radius: 8px; background: var(--green);
+           color: #fff; font: inherit; font-weight: 600; cursor: pointer; }
+  button:disabled { opacity: .6; }
+  .error { color: var(--red); font-size: 13px; margin-top: 10px; min-height: 18px; }
+  .note { text-align: center; margin-top: 16px; font-size: 13px; }
+</style>
+</head>
+<body>
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="/"><span class="brand-mark">S</span><span class="brand-text">SEO Generator</span></a>
+    <div class="nav-links">
+      <a href="/">Home</a>
+      <a href="/guide">Guide</a>
+      <a href="/audit">Audit</a>
+      <a href="/chat">Chat</a>
+      <a href="/review">Review</a>
+    </div>
+  </div>
+</nav>
+
+<div class="box">
+  <form class="card" id="form">
+    <h1>Owner login</h1>
+    <p>Only the owner needs to log in. Visitors can explore the demo without an account.</p>
+    <label for="password">Password</label>
+    <input type="password" id="password" autocomplete="current-password" required autofocus>
+    <button id="submit">Log in</button>
+    <div class="error" id="error"></div>
+  </form>
+  <div class="note"><a href="/">← Back to the demo</a></div>
+</div>
+
+<script>
+// Only allow going back to a page on this site (never to another website)
+function nextPage() {
+  const next = new URLSearchParams(location.search).get("next") || "/review";
+  return next.startsWith("/") && !next.startsWith("//") ? next : "/review";
+}
+
+document.getElementById("form").addEventListener("submit", async e => {
+  e.preventDefault();
+  const btn = document.getElementById("submit");
+  const error = document.getElementById("error");
+  btn.disabled = true;
+  error.textContent = "";
+  try {
+    const res = await fetch("/api/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ password: document.getElementById("password").value }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.detail || "Login failed");
+    location.href = nextPage();
+  } catch (err) {
+    error.textContent = err.message;
+    btn.disabled = false;
+  }
+});
+</script>
+</body>
+</html>

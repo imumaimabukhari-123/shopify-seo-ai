@@ -1,0 +1,63 @@
+/* Shared styles for all pages: colours, fonts and the top navigation bar. */
+:root {
+  --bg: #f6f6f7;
+  --card: #ffffff;
+  --text: #202223;
+  --muted: #6d7175;
+  --line: #e1e3e5;
+  --green: #008060;
+  --green-dark: #006e52;
+  --green-soft: #e3f1ec;
+  --amber: #b98900;
+  --red: #d72c0d;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font: 15px/1.55 system-ui, -apple-system, "Segoe UI", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+a { color: var(--green); }
+
+/* ---- top navigation ---- */
+.nav {
+  background: var(--card);
+  border-bottom: 1px solid var(--line);
+  position: sticky; top: 0; z-index: 10;
+}
+.nav-inner {
+  max-width: 1200px; margin: 0 auto; padding: 0 24px;
+  height: 60px; display: flex; align-items: center; gap: 28px;
+}
+.brand {
+  display: flex; align-items: center; gap: 10px;
+  font-weight: 700; color: var(--text); text-decoration: none; margin-right: auto;
+}
+.brand-mark {
+  width: 30px; height: 30px; border-radius: 8px; background: var(--green);
+  color: #fff; display: grid; place-items: center; font-size: 14px; font-weight: 800;
+}
+.nav-links { display: flex; gap: 6px; }
+.nav-links a {
+  text-decoration: none; color: var(--muted); padding: 7px 14px; border-radius: 8px; font-weight: 500;
+}
+.nav-links a:hover { background: var(--bg); color: var(--text); }
+.nav-links a.active { background: var(--green-soft); color: var(--green-dark); }
+
+@media (max-width: 600px) {
+  .nav-inner { padding: 0 16px; gap: 10px; }
+  .brand-text { display: none; }
+  .nav-links a { padding: 7px 10px; }
+}
+
+/* owner login link in the top bar (added by nav.js) */
+.nav-links a.nav-login { color: var(--green-dark); border: 1px solid var(--line); }
+.nav-links { overflow-x: auto; scrollbar-width: none; }
+@media (max-width: 600px) {
+  .nav-links a { padding: 6px 8px; font-size: 14px; white-space: nowrap; }
+}
+@media (max-width: 600px) { .hide-sm { display: none; } }
+
+/* Version 3: the client store you're working on (added by nav.js) */
+.nav-links a.nav-store { background: #fff5d6; color: #6b5000; white-space: nowrap; }

@@ -1,0 +1,399 @@
+{
+ "store": "umaima-seo-test.myshopify.com",
+ "source": "full",
+ "ran_at": "2026-10-16 16:48:47",
+ "score": 91,
+ "grade": "Great",
+ "categories": {
+  "Meta titles": {
+   "score": 100,
+   "passed": 18,
+   "total": 18
+  },
+  "Meta descriptions": {
+   "score": 100,
+   "passed": 18,
+   "total": 18
+  },
+  "Descriptions": {
+   "score": 44,
+   "passed": 8,
+   "total": 18
+  },
+  "Image alt text": {
+   "score": 93,
+   "passed": 14,
+   "total": 15
+  }
+ },
+ "top_issues": [
+  {
+   "check": "desc_thin",
+   "category": "Descriptions",
+   "severity": "medium",
+   "message": "Description is short",
+   "fix": "Aim for 100+ words: what it is, who it's for, key features.",
+   "auto_fix": true,
+   "count": 9,
+   "points": 135
+  },
+  {
+   "check": "img_none",
+   "category": "Image alt text",
+   "severity": "medium",
+   "message": "No product photos",
+   "fix": "Add at least one photo.",
+   "auto_fix": false,
+   "count": 1,
+   "points": 15
+  },
+  {
+   "check": "collection_empty",
+   "category": "Descriptions",
+   "severity": "low",
+   "message": "Collection has no products",
+   "fix": "Add products or hide the collection.",
+   "auto_fix": false,
+   "count": 1,
+   "points": 5
+  }
+ ],
+ "counts": {
+  "product": 15,
+  "collection": 3
+ },
+ "notes": [
+  "2 draft or archived product(s) were skipped (Google can't see them)."
+ ],
+ "items": [
+  {
+   "kind": "product",
+   "key": "gid://shopify/Product/15427848503548",
+   "title": "The Inventory Not Tracked Snowboard",
+   "handle": "the-inventory-not-tracked-snowboard",
+   "url": "/products/the-inventory-not-tracked-snowboard",
+   "meta_title": "The Inventory Not Tracked Snowboard | Winter Sport",
+   "meta_description": "Shop The Inventory Not Tracked Snowboard for your next winter sport adventure. Discover durable gear designed for the slopes. Order your snowboard today!",
+   "issues": [
+    {
+     "check": "desc_thin",
+     "category": "Descriptions",
+     "severity": "medium",
+     "penalty": 15,
+     "message": "Description is short (46 words)",
+     "fix": "Aim for 100+ words: what it is, who it's for, key features.",
+     "auto_fix": true
+    }
+   ],
+   "score": 85,
+   "photos": 1
+  },
+  {
+   "kind": "product",
+   "key": "gid://shopify/Product/15427848536316",
+   "title": "The Out of Stock Snowboard",
+   "handle": "the-out-of-stock-snowboard",
+   "url": "/products/the-out-of-stock-snowboard",
+   "meta_title": "The Out of Stock Snowboard | Winter Sport Gear",
+   "meta_description": "Shop The Out of Stock Snowboard for your next winter sport adventure. Discover top performance and quality accessories for the slopes today.",
+   "issues": [
+    {
+     "check": "desc_thin",
+     "category": "Descriptions",
+     "severity": "medium",
+     "penalty": 15,
+     "message": "Description is short (42 words)",
+     "fix": "Aim for 100+ words: what it is, who it's for, key features.",
+     "auto_fix": true
+    }
+   ],
+   "score": 85,
+   "photos": 1
+  },
+  {
+   "kind": "product",
+   "key": "gid://shopify/Product/15427848569084",
+   "title": "The Complete Snowboard",
+   "handle": "the-complete-snowboard",
+   "url": "/products/the-complete-snowboard",
+   "meta_title": "The Complete Snowboard | Premium Winter Snowboard",
+   "meta_description": "Shop The Complete Snowboard from Snowboard Vendor. Enjoy premium quality for your next winter snow sport adventure. Order yours today!",
+   "issues": [
+    {
+     "check": "desc_thin",
+     "category": "Descriptions",
+     "severity": "medium",
+     "penalty": 15,
+     "message": "Description is short (37 words)",
+     "fix": "Aim for 100+ words: what it is, who it's for, key features.",
+     "auto_fix": true
+    }
+   ],
+   "score": 85,
+   "photos": 1
+  },
+  {
+   "kind": "product",
+   "key": "gid://shopify/Product/15427848601852",
+   "title": "The Collection Snowboard: Hydrogen",
+   "handle": "the-collection-snowboard-hydrogen",
+   "url": "/products/the-collection-snowboard-hydrogen",
+   "meta_title": "The Collection Snowboard: Hydrogen | Winter Sport Gear",
+   "meta_description": "Shop The Collection Snowboard: Hydrogen by Hydrogen Vendor. Get ready for your next winter sport adventure with this essential snowboard accessory today.",
+   "issues": [
+    {
+     "check": "desc_thin",
+     "category": "Descriptions",
+     "severity": "medium",
+     "penalty": 15,
+     "message": "Description is short (40 words)",
+     "fix": "Aim for 100+ words: what it is, who it's for, key features.",
+     "auto_fix": true
+    }
+   ],
+   "score": 85,
+   "photos": 1
+  },
+  {
+   "kind": "product",
+   "key": "gid://shopify/Product/15427848634620",
+   "title": "The Videographer Snowboard",
+   "handle": "the-videographer-snowboard",
+   "url": "/products/the-videographer-snowboard",
+   "meta_title": "The Videographer Snowboard | Quality Snowboard",
+   "meta_description": "Shop The Videographer Snowboard for your next mountain adventure. Enjoy reliable performance and quality design on the slopes. Order yours today!",
+   "issues": [
+    {
+     "check": "desc_thin",
+     "category": "Descriptions",
+     "severity": "medium",
+     "penalty": 15,
+     "message": "Description is short (45 words)",
+     "fix": "Aim for 100+ words: what it is, who it's for, key features.",
+     "auto_fix": true
+    }
+   ],
+   "score": 85,
+   "photos": 1
+  },
+  {
+   "kind": "product",
+   "key": "gid://shopify/Product/15427848667388",
+   "title": "Selling Plans Ski Wax",
+   "handle": "selling-plans-ski-wax",
+   "url": "/products/selling-plans-ski-wax",
+   "meta_title": "Selling Plans Ski Wax | Winter Sports Accessory",
+   "meta_description": "Prepare for the slopes with Selling Plans Ski Wax. This winter sports accessory is ideal for your ski maintenance needs. Shop now for your next adventure.",
+   "issues": [
+    {
+     "check": "desc_thin",
+     "category": "Descriptions",
+     "severity": "medium",
+     "penalty": 15,
+     "message": "Description is short (43 words)",
+     "fix": "Aim for 100+ words: what it is, who it's for, key features.",
+     "auto_fix": true
+    }
+   ],
+   "score": 85,
+   "photos": 3
+  },
+  {
+   "kind": "product",
+   "key": "gid://shopify/Product/15427848700156",
+   "title": "The Minimal Snowboard",
+   "handle": "the-minimal-snowboard",
+   "url": "/products/the-minimal-snowboard",
+   "meta_title": "The Minimal Snowboard | Premium Winter Gear",
+   "meta_description": "Shop The Minimal Snowboard for your next winter mountain adventure. Discover sleek design and reliable performance on the slopes. Buy yours today!",
+   "issues": [
+    {
+     "check": "img_none",
+     "category": "Image alt text",
+     "severity": "medium",
+     "penalty": 15,
+     "message": "No product photos",
+     "fix": "Add at least one photo.",
+     "auto_fix": false
+    }
+   ],
+   "score": 85,
+   "photos": 0
+  },
+  {
+   "kind": "product",
+   "key": "gid://shopify/Product/15427848896764",
+   "title": "The Multi-location Snowboard",
+   "handle": "the-multi-location-snowboard",
+   "url": "/products/the-multi-location-snowboard",
+   "meta_title": "The Multi-location Snowboard | Winter Sports Gear",
+   "meta_description": "Shop The Multi-location Snowboard for your next winter adventure. Experience premium performance on the slopes with this versatile winter sports gear.",
+   "issues": [
+    {
+     "check": "desc_thin",
+     "category": "Descriptions",
+     "severity": "medium",
+     "penalty": 15,
+     "message": "Description is short (40 words)",
+     "fix": "Aim for 100+ words: what it is, who it's for, key features.",
+     "auto_fix": true
+    }
+   ],
+   "score": 85,
+   "photos": 1
+  },
+  {
+   "kind": "product",
+   "key": "gid://shopify/Product/15427848962300",
+   "title": "The Multi-managed Snowboard",
+   "handle": "the-multi-managed-snowboard",
+   "url": "/products/the-multi-managed-snowboard",
+   "meta_title": "The Multi-managed Snowboard | Premium Winter Snowboard",
+   "meta_description": "Shop The Multi-managed Snowboard for your next winter sport adventure. Experience premium performance on the snow. Order your snowboard today!",
+   "issues": [
+    {
+     "check": "desc_thin",
+     "category": "Descriptions",
+     "severity": "medium",
+     "penalty": 15,
+     "message": "Description is short (42 words)",
+     "fix": "Aim for 100+ words: what it is, who it's for, key features.",
+     "auto_fix": true
+    }
+   ],
+   "score": 85,
+   "photos": 1
+  },
+  {
+   "kind": "product",
+   "key": "gid://shopify/Product/15427849093372",
+   "title": "The Collection Snowboard: Liquid",
+   "handle": "the-collection-snowboard-liquid",
+   "url": "/products/the-collection-snowboard-liquid",
+   "meta_title": "The Collection Snowboard: Liquid | Winter Snowboard",
+   "meta_description": "Shop The Collection Snowboard: Liquid from Hydrogen Vendor. Get ready for your next winter sports adventure with this premium snowboard today.",
+   "issues": [
+    {
+     "check": "desc_thin",
+     "category": "Descriptions",
+     "severity": "medium",
+     "penalty": 15,
+     "message": "Description is short (41 words)",
+     "fix": "Aim for 100+ words: what it is, who it's for, key features.",
+     "auto_fix": true
+    }
+   ],
+   "score": 85,
+   "photos": 1
+  },
+  {
+   "kind": "collection",
+   "key": "gid://shopify/Collection/511951732988",
+   "title": "Home page",
+   "handle": "frontpage",
+   "url": "/collections/frontpage",
+   "meta_title": "Home page | Shop Our Latest Collection",
+   "meta_description": "Explore the Home page collection and discover our latest selections and featured items. Browse our store today to find what you need and shop now.",
+   "products_count": 0,
+   "issues": [
+    {
+     "check": "collection_empty",
+     "category": "Descriptions",
+     "severity": "low",
+     "penalty": 5,
+     "message": "Collection has no products",
+     "fix": "Add products or hide the collection.",
+     "auto_fix": false
+    }
+   ],
+   "score": 95,
+   "photos": null
+  },
+  {
+   "kind": "product",
+   "key": "gid://shopify/Product/15427848470780",
+   "title": "Gift Card",
+   "handle": "gift-card",
+   "url": "/products/gift-card",
+   "meta_title": "Snowboard Vendor Gift Card | Shop Snow Gear",
+   "meta_description": "Give the ultimate choice with a Snowboard Vendor Gift Card. Perfect for any snowboarder, let them pick their ideal gear for the slopes today.",
+   "issues": [],
+   "score": 100,
+   "photos": 1
+  },
+  {
+   "kind": "product",
+   "key": "gid://shopify/Product/15427848798460",
+   "title": "The Compare at Price Snowboard",
+   "handle": "the-compare-at-price-snowboard",
+   "url": "/products/the-compare-at-price-snowboard",
+   "meta_title": "The Compare at Price Snowboard | Winter Sport Gear",
+   "meta_description": "Shop The Compare at Price Snowboard for your next winter sport adventure. Get ready for the slopes with this essential winter accessory. Buy now!",
+   "issues": [],
+   "score": 100,
+   "photos": 1
+  },
+  {
+   "kind": "product",
+   "key": "gid://shopify/Product/15427848831228",
+   "title": "The Hidden Snowboard",
+   "handle": "the-hidden-snowboard",
+   "url": "/products/the-hidden-snowboard",
+   "meta_title": "The Hidden Snowboard | Premium Winter Snowboard",
+   "meta_description": "Shop The Hidden Snowboard by Snowboard Vendor. Get ready for winter with this premium snowboard designed for snow sports. Order yours today!",
+   "issues": [],
+   "score": 100,
+   "photos": 1
+  },
+  {
+   "kind": "product",
+   "key": "gid://shopify/Product/15427848929532",
+   "title": "The 3p Fulfilled Snowboard",
+   "handle": "the-3p-fulfilled-snowboard",
+   "url": "/products/the-3p-fulfilled-snowboard",
+   "meta_title": "The 3p Fulfilled Snowboard | Winter Sport Gear",
+   "meta_description": "Shop The 3p Fulfilled Snowboard for your next mountain adventure. Get ready for the ultimate winter sport experience. Order yours today!",
+   "issues": [],
+   "score": 100,
+   "photos": 1
+  },
+  {
+   "kind": "product",
+   "key": "gid://shopify/Product/15427848995068",
+   "title": "The Collection Snowboard: Oxygen",
+   "handle": "the-collection-snowboard-oxygen",
+   "url": "/products/the-collection-snowboard-oxygen",
+   "meta_title": "The Collection Snowboard: Oxygen | Winter Sport Gear",
+   "meta_description": "Shop The Collection Snowboard: Oxygen by Hydrogen Vendor. The ultimate winter sport accessory for your next adventure. Get yours today and hit the slopes!",
+   "issues": [],
+   "score": 100,
+   "photos": 1
+  },
+  {
+   "kind": "collection",
+   "key": "gid://shopify/Collection/511951765756",
+   "title": "Automated Collection",
+   "handle": "automated-collection",
+   "url": "/collections/automated-collection",
+   "meta_title": "Snowboards | Automated Collection",
+   "meta_description": "Shop our Automated Collection of snowboards, featuring 8 unique boards including Liquid, Hydrogen, and Complete. Find your next snowboard today!",
+   "products_count": 8,
+   "issues": [],
+   "score": 100,
+   "photos": null
+  },
+  {
+   "kind": "collection",
+   "key": "gid://shopify/Collection/511951798524",
+   "title": "Hydrogen",
+   "handle": "hydrogen",
+   "url": "/collections/hydrogen",
+   "meta_title": "Hydrogen Snowboards | Shop Winter Gear",
+   "meta_description": "Shop the Hydrogen collection at our store. Discover top snowboards including Liquid, Oxygen, and Hydrogen. Find your next winter ride today!",
+   "products_count": 3,
+   "issues": [],
+   "score": 100,
+   "photos": null
+  }
+ ]
+}
