@@ -127,8 +127,9 @@ IMPORTANT: You are talking to a VISITOR of the public demo, not the owner.
 
 def ask(history: list[dict], job: dict, owner: bool = True) -> tuple[str, dict]:
     """Send the conversation to the AI. Returns (reply_text, action_dict)."""
-    contact = (f'hire the developer, Syeda Umaima, through the "{config.HIRE_LABEL}" button on the Home page'
-               if config.HIRE_URL else "contact the developer, Syeda Umaima (imumaimabukhari@gmail.com),")
+    contact = ("contact the developer, Syeda Umaima, by email (imumaimabukhari@gmail.com)"
+               + (f' or through the "{config.HIRE_LABEL}" button on the Home page' if config.HIRE_URL else "")
+               + ",")
     system = SYSTEM_PROMPT + ("" if owner else "\n" + VISITOR_NOTE.replace("{contact}", contact))
     messages = [
         {"role": "system", "content": system + "\n\n" + _context(job)},

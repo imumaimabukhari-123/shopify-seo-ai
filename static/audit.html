@@ -88,7 +88,7 @@
     </div>
   </div>
 </nav>
-<script src="/static/nav.js?v=4"></script>
+<script src="/static/nav.js?v=5"></script>
 
 <div class="wrap">
   <div class="intro">
@@ -237,10 +237,17 @@ function renderReport(report, target) {
   if (pub) {
     const cta = el("div", "cta");
     cta.append(el("span", "", "Want these problems fixed? This tool writes the missing SEO text with AI, and you approve everything before it goes live."));
-    const a = el("a", "btn", "Get my store fixed");
-    a.href = HIRE_URL || "/#developer";
-    if (HIRE_URL) { a.target = "_blank"; a.rel = "noopener noreferrer"; }
-    cta.append(a);
+    const btns = el("div");
+    btns.style.cssText = "display:flex;gap:10px;flex-wrap:wrap";
+    const mail = el("a", "btn", "✉ Email me");
+    mail.href = "mailto:imumaimabukhari@gmail.com?subject=Fix%20my%20Shopify%20store";
+    btns.append(mail);
+    if (HIRE_URL) {
+      const f = el("a", "btn", "Hire me on Fiverr →");
+      f.href = HIRE_URL; f.target = "_blank"; f.rel = "noopener noreferrer";
+      btns.append(f);
+    }
+    cta.append(btns);
     box.append(cta);
   }
   target.replaceChildren(box);

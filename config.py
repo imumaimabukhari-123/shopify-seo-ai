@@ -56,7 +56,7 @@ IS_LOCAL = HOST in ("127.0.0.1", "localhost") and not DEMO_ONLY
 # (made with: python cli.py demo-snapshot), because the real CSVs aren't uploaded.
 DEMO_DATA_DIR = _get("DEMO_DATA_DIR", "demo_data")
 # Online, buyers are sent here instead of to your email (e.g. your Fiverr gig).
-HIRE_URL = _get("HIRE_URL")
+HIRE_URL = _get("HIRE_URL", "https://www.fiverr.com/umaima886")
 HIRE_LABEL = _get("HIRE_LABEL", "Hire me on Fiverr")
 ADMIN_PASSWORD = _get("ADMIN_PASSWORD")
 SESSION_SECRET = _get("SESSION_SECRET")       # optional: keeps you logged in across restarts

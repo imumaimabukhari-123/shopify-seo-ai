@@ -9,15 +9,18 @@ window.mePromise.then(me => {
   document.body.classList.toggle("is-owner", me.owner);
   document.body.classList.toggle("is-visitor", !me.owner);
 
-  // Online, buyers go to the Fiverr gig (HIRE_URL) instead of the email address
+  // Two ways to hire: email (work directly) and Fiverr (HIRE_URL), side by side
   if (me.hire_url) {
-    document.querySelectorAll("[data-contact]").forEach(a => {
-      a.href = me.hire_url;
-      a.target = "_blank";
-      a.rel = "noopener noreferrer";
-      a.textContent = me.hire_label + " →";
+    document.querySelectorAll("[data-contact]").forEach(mail => {
+      const fiverr = document.createElement("a");
+      fiverr.className = mail.className.replace("primary", "").trim() || "btn";
+      fiverr.href = me.hire_url;
+      fiverr.target = "_blank";
+      fiverr.rel = "noopener noreferrer";
+      fiverr.textContent = me.hire_label + " →";
+      fiverr.style.marginLeft = "10px";
+      mail.after(fiverr);
     });
-    document.querySelectorAll("[data-contact-hide]").forEach(a => (a.hidden = true));
   }
   const links = document.querySelector(".nav-links");
   if (!links) return;
